@@ -1,15 +1,22 @@
 #pragma once
+
 #include <functional>
 #include "pico/stdlib.h"
-#include <ctime>
+#include "display_utils.hpp"
 
 class Timer
 {
 public:
-  Timer(std::function<bool()> callback, int delayInSec);
+  Timer(int countdown);
   void start();
+  void stop();
+  void reset();
+  bool isRunning();
   
 private:
-  std::function<bool()> _callback;
-  int _delayInMs;
+  int _totalCountdown;
+  int _remainingCountdown;
+  struct repeating_timer timer;
+
+  static bool repeatingTimerCallback(__unused struct repeating_timer *t);
 };
