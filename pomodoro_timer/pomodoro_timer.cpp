@@ -8,6 +8,8 @@
 #include "libraries/pico_graphics/pico_graphics.hpp"
 #include "rgbled.hpp"
 #include "button.hpp"
+#include "timer.hpp"
+#include "pico/stdlib.h"
 
 using namespace pimoroni;
 
@@ -24,66 +26,20 @@ Button button_y(PicoDisplay2::Y);
 int main() {
   st7789.set_backlight(255);
 
-  struct pt {
-    float      x;
-    float      y;
-    uint8_t    r;
-    float     dx;
-    float     dy;
-    uint16_t pen;
-  };
-
-  std::vector<pt> shapes;
-  for(int i = 0; i < 100; i++) {
-    pt shape;
-    shape.x = rand() % graphics.bounds.w;
-    shape.y = rand() % graphics.bounds.h;
-    shape.r = (rand() % 10) + 3;
-    shape.dx = float(rand() % 255) / 64.0f;
-    shape.dy = float(rand() % 255) / 64.0f;
-    shape.pen = graphics.create_pen(rand() % 255, rand() % 255, rand() % 255);
-    shapes.push_back(shape);
-  }
-
   Point text_location(0, 0);
 
   Pen BG = graphics.create_pen(120, 40, 60);
   Pen WHITE = graphics.create_pen(255, 255, 255);
 
   while(true) {
-    if(button_a.raw()) text_location.x -= 1;
-    if(button_b.raw()) text_location.x += 1;
+    if(button_a.raw()) text_location.x += 1;
+    if(button_b.raw()) text_location.x -= 1;
 
     if(button_x.raw()) text_location.y -= 1;
     if(button_y.raw()) text_location.y += 1;
   
     graphics.set_pen(BG);
     graphics.clear();
-
-    for(auto &shape : shapes) {
-      shape.x += shape.dx;
-      shape.y += shape.dy;
-      if((shape.x - shape.r) < 0) {
-        shape.dx *= -1;
-        shape.x = shape.r;
-      }
-      if((shape.x + shape.r) >= graphics.bounds.w) {
-        shape.dx *= -1;
-        shape.x = graphics.bounds.w - shape.r;
-      }
-      if((shape.y - shape.r) < 0) {
-        shape.dy *= -1;
-        shape.y = shape.r;
-      }
-      if((shape.y + shape.r) >= graphics.bounds.h) {
-        shape.dy *= -1;
-        shape.y = graphics.bounds.h - shape.r;
-      }
-
-      graphics.set_pen(shape.pen);
-      graphics.circle(Point(shape.x, shape.y), shape.r);
-
-    }
 
     // Since HSV takes a float from 0.0 to 1.0 indicating hue,
     // then we can divide millis by the number of milliseconds
@@ -92,12 +48,16 @@ int main() {
     RGB p = RGB::from_hsv(0,0,0);
     led.set_rgb(p.r, p.g, p.b);
 
+    Timer timer([WHITE, text_location]() { 
+      graphics.set_pen(WHITE);
+      graphics.text("Hello World", text_location, 320);
+      return true;
+     }, 5);
 
-    graphics.set_pen(WHITE);
-    graphics.text("Hello World", text_location, 320);
-
+     timer.start();
+    
     // update screen
-    st7789.update(&graphics);
+     st7789.update(&graphics);
   }
 
     return 0;

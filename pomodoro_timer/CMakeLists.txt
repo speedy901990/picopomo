@@ -4,6 +4,7 @@ set(OUTPUT_NAME pomodoro_timer)
 
 add_executable(
   ${OUTPUT_NAME}
+  timer.cpp
   pomodoro_timer.cpp
 )
 
