@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include "libraries/pico_display_2/pico_display_2.hpp"
 #include "drivers/st7789/st7789.hpp"
 #include "libraries/pico_graphics/pico_graphics.hpp"
@@ -22,3 +23,5 @@ extern pimoroni::Pen WHITE;
 extern pimoroni::Point text_location;
 
 extern std::string textToDisplay;
+extern std::atomic<int> totalTime;
+extern repeating_timer timer;

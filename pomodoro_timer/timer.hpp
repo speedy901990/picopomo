@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 #include <atomic>
 #include "pico/stdlib.h"
 #include "display_utils.hpp"
@@ -11,13 +10,16 @@ public:
   Timer(int countdown);
   void start();
   void stop();
+  void pause();
   void reset();
   bool isRunning();
+  int getRemainingTime();
   
 private:
   int _totalTime;
-  static int _remainingTime;
-  repeating_timer timer;
+  int _remainingTime;
+  alarm_id_t _alarmId;
 
-  static bool repeatingTimerCallback(__unused struct repeating_timer *t);
+  static std::atomic<bool> _running;
+  static int64_t alarm_callback(alarm_id_t id, __unused void *user_data);
 };

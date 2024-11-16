@@ -12,8 +12,13 @@ Button button_b(PicoDisplay2::B);
 Button button_x(PicoDisplay2::X);
 Button button_y(PicoDisplay2::Y);
 
-Pen BG = graphics.create_pen(120, 40, 60);
+//Pen BG = graphics.create_pen(90, 10, 120); // purple
+Pen BG = graphics.create_pen(0, 0, 0); // black
+//Pen BG = graphics.create_pen(120, 40, 60); // brown
 Pen WHITE = graphics.create_pen(255, 255, 255);
 
-Point text_location(320/2-30, 240/2);
+Point text_location(320/2-100, 240/2);
 std::string textToDisplay = "Hello World";
+
+std::atomic<int> totalTime = 5;
+repeating_timer timer{};

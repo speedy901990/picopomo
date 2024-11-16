@@ -1,34 +1,55 @@
 #include "timer.hpp"
 #include <sstream>
 
-int Timer::_remainingTime = 0;
+std::atomic<bool> Timer::_running = false;
 
 Timer::Timer(int countdown)
-  : _totalTime(countdown) {
-  //_remainingTime = countdown;
+  : _totalTime(countdown * 1000), _remainingTime(countdown * 1000) {
 }
 
-bool Timer::repeatingTimerCallback(__unused struct repeating_timer *t) {
-  _remainingTime++;
-
-  std::stringstream ss;
-  ss << _remainingTime << "s";
-  textToDisplay = ss.str();
-  
-  return true;
+int64_t Timer::alarm_callback(alarm_id_t id, __unused void *user_data) {
+  //textToDisplay = "DONE";
+  _running = false;
+  return 0;
 }
 
 void Timer::start() {
-  add_repeating_timer_ms(1000, repeatingTimerCallback, NULL, &timer);
+  if (isRunning()) {
+    return;
+  }
+  
+  _alarmId = add_alarm_in_ms(_remainingTime, alarm_callback, NULL, false);
+  _running = true;
+}
+
+void Timer::pause() {
+  _remainingTime = remaining_alarm_time_ms(_alarmId);
+  std::stringstream ss;
+  ss << "PAUSED remaining: " << getRemainingTime() << " s";
+  ss << " | is running: " << _running;
+  textToDisplay = ss.str();
+  _running = false;
 }
 
 void Timer::stop() {
   textToDisplay="STOPPED";
-  cancel_repeating_timer(&timer);
+  _running = !cancel_alarm(_alarmId);
+  _remainingTime = _totalTime;
+  _running = false;
 }
 
 void Timer::reset() {
-  std::stringstream ss;
-  ss << "Remaining: " << _remainingTime;
-  textToDisplay = ss.str();
+  bool wasRunning = isRunning();
+  stop();
+  if (wasRunning) {
+    start();
+  }
+}
+
+bool Timer::isRunning() {
+  return _running;
+}
+
+int Timer::getRemainingTime() {
+  return remaining_alarm_time_ms(_alarmId) / 1000;
 }
