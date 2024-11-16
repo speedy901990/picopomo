@@ -1,18 +1,25 @@
 #include "timer.hpp"
-extern std::string textToDisplay;
+#include <sstream>
+
+int Timer::_remainingTime = 0;
 
 Timer::Timer(int countdown)
-  : _totalCountdown(countdown), _remainingCountdown(countdown) {
+  : _totalTime(countdown) {
+  //_remainingTime = countdown;
 }
 
 bool Timer::repeatingTimerCallback(__unused struct repeating_timer *t) {
-  textToDisplay="COUNTDOWN DONE";
+  _remainingTime++;
+
+  std::stringstream ss;
+  ss << _remainingTime << "s";
+  textToDisplay = ss.str();
+  
   return true;
 }
 
 void Timer::start() {
-  add_repeating_timer_ms(5000, repeatingTimerCallback, NULL, &timer);
-  //sleep_ms(2000);
+  add_repeating_timer_ms(1000, repeatingTimerCallback, NULL, &timer);
 }
 
 void Timer::stop() {
@@ -21,5 +28,7 @@ void Timer::stop() {
 }
 
 void Timer::reset() {
-  
+  std::stringstream ss;
+  ss << "Remaining: " << _remainingTime;
+  textToDisplay = ss.str();
 }

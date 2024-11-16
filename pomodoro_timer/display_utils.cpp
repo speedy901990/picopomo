@@ -15,5 +15,5 @@ Button button_y(PicoDisplay2::Y);
 Pen BG = graphics.create_pen(120, 40, 60);
 Pen WHITE = graphics.create_pen(255, 255, 255);
 
-Point text_location(0, 0);
+Point text_location(320/2-30, 240/2);
 std::string textToDisplay = "Hello World";

@@ -16,8 +16,8 @@ int main() {
     if(button_a.raw()) timer.stop();//text_location.x += 1;
     if(button_b.raw()) textToDisplay="STOPPED HERE";//text_location.x -= 1;
 
-    if(button_x.raw()) text_location.y -= 1;
-    if(button_y.raw()) text_location.y += 1;
+    if(button_x.raw()) timer.reset();
+    if(button_y.raw()) timer.start();
   
     graphics.set_pen(BG);
     graphics.clear();

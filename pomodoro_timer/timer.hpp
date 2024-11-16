@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <atomic>
 #include "pico/stdlib.h"
 #include "display_utils.hpp"
 
@@ -14,9 +15,9 @@ public:
   bool isRunning();
   
 private:
-  int _totalCountdown;
-  int _remainingCountdown;
-  struct repeating_timer timer;
+  int _totalTime;
+  static int _remainingTime;
+  repeating_timer timer;
 
   static bool repeatingTimerCallback(__unused struct repeating_timer *t);
 };
