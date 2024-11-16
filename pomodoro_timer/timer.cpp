@@ -9,9 +9,8 @@ Timer::Timer(int countdown)
 }
 
 int64_t Timer::alarm_callback(alarm_id_t id, __unused void *user_data) {
-  //textToDisplay = "DONE";
-  _finished = true;
   _running = false;
+  _finished = true;
   return 0;
 }
 
@@ -26,13 +25,16 @@ void Timer::start() {
   _running = true;
 }
 
-void Timer::pause() {
-  _remainingTime = remaining_alarm_time_ms(_alarmId);
-  std::stringstream ss;
-  ss << "PAUSED remaining: " << getRemainingTime() << " s";
-  ss << " | is running: " << _running;
-  textToDisplay = ss.str();
-  _running = false;
+void Timer::pause()
+{
+  if (isRunning() && !isFinished()) {  
+    _remainingTime = remaining_alarm_time_ms(_alarmId);
+    cancel_alarm(_alarmId);
+    std::stringstream ss;
+    ss << "PAUSED remaining: " << _remainingTime / 1000 << " s";
+    textToDisplay = ss.str();
+    _running = false;
+  }
 }
 
 void Timer::stop() {
@@ -40,6 +42,7 @@ void Timer::stop() {
   _running = !cancel_alarm(_alarmId);
   _remainingTime = _totalTime;
   _running = false;
+  _finished = false;
 }
 
 void Timer::reset() {
@@ -55,7 +58,7 @@ bool Timer::isRunning() {
 }
 
 bool Timer::isFinished() {
-  return !_running && _finished;
+  return _finished;
 }
 
 int Timer::getRemainingTime() {

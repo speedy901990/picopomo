@@ -23,5 +23,6 @@ private:
 
   static std::atomic<bool> _running;
   static std::atomic<bool> _finished;
+
   static int64_t alarm_callback(alarm_id_t id, __unused void *user_data);
 };
