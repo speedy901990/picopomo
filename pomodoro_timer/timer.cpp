@@ -1,4 +1,5 @@
 #include "timer.hpp"
+
 #include <sstream>
 
 std::atomic<bool> Timer::_running = false;

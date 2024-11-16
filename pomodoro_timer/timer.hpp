@@ -1,6 +1,5 @@
 #pragma once
 
-#include <atomic>
 #include "pico/stdlib.h"
 #include "display_utils.hpp"
 
