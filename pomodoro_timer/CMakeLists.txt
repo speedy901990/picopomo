@@ -7,6 +7,9 @@ add_executable(
   display_utils.cpp
   timer.cpp
   pomodoro_timer.cpp
+  section.cpp
+  work_section.cpp
+  rest_section.cpp
 )
 
 # Pull in pico libraries that we need

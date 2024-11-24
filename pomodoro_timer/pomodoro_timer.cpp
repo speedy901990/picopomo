@@ -6,6 +6,7 @@
 #include "timer.hpp"
 #include "display_utils.hpp"
 
+#include "font8_data.hpp"
 
 using namespace pimoroni;
 
@@ -33,11 +34,14 @@ int main() {
       textToDisplay = ss.str();
     }
 
-     graphics.set_pen(WHITE);
-     graphics.text(textToDisplay, text_location, 320);
+    
+    graphics.set_pen(WHITE);
+    graphics.set_font("sans");
+    
+    graphics.text(textToDisplay, text_location, 320, 0.7);
     
     // update screen
-     st7789.update(&graphics);
+    st7789.update(&graphics);
   }
 
     return 0;
